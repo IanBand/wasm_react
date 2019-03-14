@@ -2,6 +2,11 @@
 import React, { Component } from "react";
 
 
+const maxIter = 100;
+const maxSize = 100;
+const mag = 150;
+const offset_x = 2.0;
+const offset_y = 1.5;
 
 class Canvas extends Component {
     constructor(props){
@@ -12,16 +17,21 @@ class Canvas extends Component {
         //scaler
         let canvas = this.canvasRef.current.getContext('2d');
         
-        let maxIter = 3;
-        let maxSize = 2000;
-
         for (let x = 0; x < this.props.height; x++)  {
             for (let y = 0; y < this.props.width; y++)  {
-              let m = mandelbrotPointTester(x, y, maxIter, maxSize);
+                
+                let norm_x = x/mag - offset_x;
 
-              canvas.fillStyle = (m === 0) ? '#000' : 'hsl(0, 100%, ' + m*100 + '%)'; 
+                let norm_y = y/mag - offset_y;
 
-              canvas.fillRect(x, y, 1,1);//square starting at x,y and extending right and down 1 px
+
+
+
+                let m = mandelbrotPointTester(norm_x, norm_y, maxIter, maxSize);
+
+                canvas.fillStyle = (m === 0) ? '#000' : 'hsl(0, 100%, ' + m*100 + '%)'; 
+
+                canvas.fillRect(x, y, 1,1);//square starting at x,y and extending right and down 1 px
             }
         }
     }
@@ -35,7 +45,7 @@ class Canvas extends Component {
 export default Canvas;
 
 
-const mandelbrotPointTester = (x, y, maxIterations, maxSize) => {//max size is the square of the upper bound
+const mandelbrotPointTester = (x, y, maxIterations, max_Size) => {//max size is the square of the upper bound
 
     //Z starts at 0
     let real = 0;
@@ -47,10 +57,19 @@ const mandelbrotPointTester = (x, y, maxIterations, maxSize) => {//max size is t
         // Znext = r^2 + 2ir + i^2 + C
         // Znext = r^2 + 2ir - i^2 + ( iy + x )
 
-        real = real * real - imag * imag + x; // real component of Znext
-        imag = 2 * imag * real + y; //imaginary component of Znext
 
-        if(real * imag > maxSize){
+        //real = real * real - imag * imag + x; // real component of Znext... this doesnt work because when imag is computed, it uses the wrong value for real. thats why you need temp
+        //imag = 2 * imag * real + y; //imaginary component of Znext
+        
+
+
+        let real_temp = real * real - imag * imag + x; // real component of Znext
+        let imag_temp = 2 * imag * real + y; //imaginary component of Znext
+
+        real = real_temp;
+        imag = imag_temp;
+
+        if(real * imag > max_Size){
             return i/maxIterations;
         }
     }
