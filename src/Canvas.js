@@ -1,12 +1,14 @@
 // src/canvas.js
 import React, { Component } from "react";
 
+const wasm = import('../wasm/mandelbrotPointTester.wasm');
+//import wasm from '../wasm/mandelbrotPointTester.wasm';
 
-const maxIter = 100;
-const maxSize = 100;
-const mag = 150;
-const offset_x = 2.0;
-const offset_y = 1.5;
+const maxIter = 400;
+const maxSize = 10000;
+const mag = 1400;
+const offset_x = 0.55; //2.0
+const offset_y = 0.85; //1.5
 
 class Canvas extends Component {
     constructor(props){
@@ -14,7 +16,34 @@ class Canvas extends Component {
         this.canvasRef = React.createRef();
     }
     componentDidMount() {
-        //scaler
+        //wasm
+        /*
+        wasm.then(wasm => {
+            const mandelbrotPointTesterWASM = wasm._Z21mandelbrotPointTesterffif; //name obtained form .wasm file
+            let canvas = this.canvasRef.current.getContext('2d');
+            
+            for (let x = 0; x < this.props.height; x++)  {
+                for (let y = 0; y < this.props.width; y++)  {
+                    
+                    let norm_x = x/mag - offset_x;
+
+                    let norm_y = y/mag - offset_y;
+
+                    let m = mandelbrotPointTesterWASM(norm_x, norm_y, maxIter, maxSize);
+
+                    if(x === 0 && y === 0)console.log(typeof m);
+                    
+                    canvas.fillStyle = (m === 0) ? '#000' : 'hsl(0, 100%, ' + m * 100 + '%)';
+
+                    canvas.fillRect(x, y, 1,1);//square starting at x,y and extending right and down 1 px
+                }
+            }
+
+
+        })
+        */
+        //js
+        
         let canvas = this.canvasRef.current.getContext('2d');
         
         for (let x = 0; x < this.props.height; x++)  {
@@ -24,16 +53,16 @@ class Canvas extends Component {
 
                 let norm_y = y/mag - offset_y;
 
-
-
-
                 let m = mandelbrotPointTester(norm_x, norm_y, maxIter, maxSize);
 
-                canvas.fillStyle = (m === 0) ? '#000' : 'hsl(0, 100%, ' + m*100 + '%)'; 
+                if(x === 0 && y === 0)console.log(typeof m);
+
+                canvas.fillStyle = (m === 0) ? '#000' : 'hsl(0, 100%, ' + m * 100 + '%)';
 
                 canvas.fillRect(x, y, 1,1);//square starting at x,y and extending right and down 1 px
             }
         }
+        
     }
     render() {
         return (
