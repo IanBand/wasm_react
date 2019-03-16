@@ -17,7 +17,7 @@ class Canvas extends Component {
     }
     componentDidMount() {
         //wasm
-        /*
+        
         wasm.then(wasm => {
             const mandelbrotPointTesterWASM = wasm._Z21mandelbrotPointTesterffif; //name obtained form .wasm file
             let canvas = this.canvasRef.current.getContext('2d');
@@ -41,9 +41,9 @@ class Canvas extends Component {
 
 
         })
-        */
-        //js
         
+        //js
+        /*
         let canvas = this.canvasRef.current.getContext('2d');
         
         for (let x = 0; x < this.props.height; x++)  {
@@ -62,7 +62,7 @@ class Canvas extends Component {
                 canvas.fillRect(x, y, 1,1);//square starting at x,y and extending right and down 1 px
             }
         }
-        
+        */
     }
     render() {
         return (
